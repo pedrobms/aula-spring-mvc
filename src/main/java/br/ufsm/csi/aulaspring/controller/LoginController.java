@@ -1,7 +1,11 @@
 package br.ufsm.csi.aulaspring.controller;
 
+import br.ufsm.csi.aulaspring.model.Usuario;
 import br.ufsm.csi.aulaspring.service.LoginService;
+import br.ufsm.csi.aulaspring.service.UsuarioService;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpSession;
+import org.apache.juli.logging.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,15 +21,17 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(Model model, String email, String senha) {
-        System.out.println("Email: " + email + " - senha: " + senha);
+    public String login(HttpSession session, Model model, String email, String senha) {
+        Usuario usuario = new LoginService().autenticar(email, senha);
 
-        if(new LoginService().autenticar(email, senha)) {
-            // Se a autenticação for bem-sucedida, redireciona para o dashboard
-            return "redirect:/dashboard"; // Redireciona para o método dashboard()
-        }else {
+        if(usuario != null) {
+            // Se a autenticação for bem-sucedida, armazena o usuário na sessão
+            session.setAttribute("usuarioLogado", usuario);
+            return "redirect:/dashboard"; // Redireciona para o dashboard
+        } else {
+            // Se a autenticação falhar, retorna à página de login com uma mensagem de erro
             model.addAttribute("msg", "Login ou senha incorreto!");
-            return "index"; // Retorna à página de login com mensagem de erro
+            return "index"; // Retorna à página de login
         }
     }
 
@@ -33,6 +39,13 @@ public class LoginController {
     public String dashboard() {
         // Retorna a página do dashboard
         return "pages/dashboard"; // Nome do template HTML para o dashboard
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        // Invalida a sessão para fazer logout
+        session.invalidate();
+        return "redirect:/"; // Redireciona para a página de login
     }
 
 }

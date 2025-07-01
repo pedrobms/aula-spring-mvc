@@ -30,6 +30,10 @@ public class UsuarioService {
         return dao.buscar(usuarioId);
     }
 
+    public Usuario buscar(String email) {
+        return dao.buscar(email);
+    }
+
     public String inserir(Usuario usuario) {
         return dao.inserir(usuario);
     }
