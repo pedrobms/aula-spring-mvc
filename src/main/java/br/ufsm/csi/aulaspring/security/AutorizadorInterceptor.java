@@ -13,7 +13,7 @@ public class AutorizadorInterceptor implements HandlerInterceptor {
                              Object handler) throws Exception {
         // Verifica se a URL acessada é a de login
         String uri = request.getRequestURI();
-        if (uri.equals("/")) {
+        if (uri.equals("/") || uri.equals("/login")) {
             // Se for a página de login, permite o acesso
             return true; // Permite a requisição continuar
         }

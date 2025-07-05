@@ -38,4 +38,7 @@ public class UsuarioService {
         return dao.inserir(usuario);
     }
 
+    public String alterar(Usuario usuario) {
+        return dao.alterar(usuario); // Caso contrário, chama o método alterar
+    }
 }
